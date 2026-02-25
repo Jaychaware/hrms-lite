@@ -7,6 +7,21 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' }
 })
 
+// Response interceptor for better error handling
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response) {
+      console.error('API Error:', error.response.status, error.response.data)
+    } else if (error.request) {
+      console.error('No response:', error.request)
+    } else {
+      console.error('Axios error:', error.message)
+    }
+    return Promise.reject(error)
+  }
+)
+
 export const employeeAPI = {
   getAll: () => api.get('/employees'),
   create: (data) => api.post('/employees', data),

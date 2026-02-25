@@ -19,10 +19,17 @@ export default function EmployeeManagement() {
     setLoading(true)
     setError('')
     try {
-      const response = await employeeAPI.getAll()
-      setEmployees(response.data)
+      const res = await employeeAPI.getAll()
+      if (res.data && Array.isArray(res.data)) {
+        setEmployees(res.data)
+      } else {
+        throw new Error('Invalid response format')
+      }
     } catch (err) {
-      setError(err.response?.data?.detail || 'Error loading employees')
+      console.error('Employee fetch error:', err)
+      const errorMsg = err.response?.data?.detail || err.message || 'Error loading employees'
+      setError(errorMsg)
+      setEmployees([])
     } finally {
       setLoading(false)
     }
@@ -30,25 +37,36 @@ export default function EmployeeManagement() {
 
   const handleAddEmployee = async (data) => {
     try {
-      await employeeAPI.create(data)
-      setSuccess('Employee added!')
-      setShowForm(false)
-      fetchEmployees()
-      setTimeout(() => setSuccess(''), 3000)
+      setError('')
+      setSuccess('')
+      const res = await employeeAPI.create(data)
+      if (res.status === 201 || res.data) {
+        setSuccess('Employee added!')
+        setShowForm(false)
+        await fetchEmployees()
+        setTimeout(() => setSuccess(''), 3000)
+      }
     } catch (err) {
-      setError(err.response?.data?.detail || 'Error adding employee')
+      console.error('Add employee error:', err)
+      const errorMsg = err.response?.data?.detail || err.message || 'Error adding employee'
+      setError(errorMsg)
     }
   }
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this employee?')) return
     try {
-      await employeeAPI.delete(id)
-      setSuccess('Employee deleted!')
-      fetchEmployees()
-      setTimeout(() => setSuccess(''), 3000)
+      setError('')
+      const res = await employeeAPI.delete(id)
+      if (res.status === 200 || res.data) {
+        setSuccess('Employee deleted!')
+        await fetchEmployees()
+        setTimeout(() => setSuccess(''), 3000)
+      }
     } catch (err) {
-      setError(err.response?.data?.detail || 'Error deleting employee')
+      console.error('Delete employee error:', err)
+      const errorMsg = err.response?.data?.detail || err.message || 'Error deleting employee'
+      setError(errorMsg)
     }
   }
 

@@ -20,20 +20,33 @@ export default function AttendanceManagement() {
   const fetchEmployees = async () => {
     try {
       const res = await employeeAPI.getAll()
-      setEmployees(res.data)
+      if (res.data && Array.isArray(res.data)) {
+        setEmployees(res.data)
+      } else {
+        throw new Error('Invalid employees response')
+      }
     } catch (err) {
+      console.error('Employees fetch error:', err)
       setError('Error loading employees')
+      setEmployees([])
     }
   }
 
   const fetchRecords = async () => {
     setLoading(true)
+    setError('')
     try {
       const res = await attendanceAPI.getAll()
-      setRecords(res.data)
-      setError('')
+      if (res.data && Array.isArray(res.data)) {
+        setRecords(res.data)
+      } else {
+        throw new Error('Invalid response format')
+      }
     } catch (err) {
-      setError('Error loading records')
+      console.error('Attendance fetch error:', err)
+      const errorMsg = err.response?.data?.detail || err.message || 'Error loading records'
+      setError(errorMsg)
+      setRecords([])
     } finally {
       setLoading(false)
     }
@@ -41,12 +54,18 @@ export default function AttendanceManagement() {
 
   const handleMark = async (data) => {
     try {
-      await attendanceAPI.create(data)
-      setSuccess('Marked!')
-      fetchRecords()
-      setTimeout(() => setSuccess(''), 3000)
+      setError('')
+      const res = await attendanceAPI.create(data)
+      if (res.status === 201 || res.data) {
+        setSuccess('Marked!')
+        await fetchRecords()
+        setTimeout(() => setSuccess(''), 3000)
+      }
     } catch (err) {
-      setError(err.response?.data?.detail || 'Error')
+      console.error('Mark attendance error:', err)
+      const errorMsg = err.response?.data?.detail || err.message || 'Error marking attendance'
+      setError(errorMsg)
+      setSuccess('')
     }
   }
 
