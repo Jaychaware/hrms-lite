@@ -255,6 +255,11 @@ GET /attendance/employee/{employee_id}
 - Status: Must be "Present" or "Absent"
 - Unique constraint: One record per employee per date
 
+### Employee Management
+- Add employee
+- View employee list
+- Delete employee
+
 ## 📋 Database Schema
 
 ### Employees Table
@@ -388,3 +393,15 @@ This project is created for educational and evaluation purposes.
 - **Backend**: Fully functional with validation and error handling
 - **Frontend**: Responsive UI with all required features
 - **Deployment**: Ready for Render and Vercel
+
+🐳 Docker Setup
+Run Backend with Docker
+cd backend
+docker build -t hrms-backend .
+docker run -p 8000:8000 hrms-backend
+Run Frontend with Docker
+cd frontend
+docker build -t hrms-frontend .
+docker run -p 5173:5173 hrms-frontend
+Using Docker Compose
+docker-compose up --build
