@@ -8,16 +8,6 @@ from schemas import AttendanceCreate, AttendanceResponse
 
 router = APIRouter(prefix="/attendance", tags=["Attendance"])
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from datetime import datetime
-from database import get_db
-from models.employee import Employee
-from models.attendance import Attendance
-from schemas import AttendanceCreate, AttendanceResponse
-
-router = APIRouter(prefix="/attendance", tags=["Attendance"])
-
 @router.post("", status_code=201)
 def mark_attendance(attendance: AttendanceCreate, db: Session = Depends(get_db)):
     if attendance.status not in ["Present", "Absent"]:
