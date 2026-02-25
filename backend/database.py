@@ -9,11 +9,14 @@ DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./hrms.db")
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {},
-    poolclass=StaticPool if "sqlite" in DATABASE_URL else None
-)
+if "sqlite" in DATABASE_URL:
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool
+    )
+else:
+    engine = create_engine(DATABASE_URL)
 
 # Enable foreign keys for SQLite
 if "sqlite" in DATABASE_URL:
@@ -23,7 +26,11 @@ if "sqlite" in DATABASE_URL:
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
 
-SessionLocal = sessionmaker(bind=engine)
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
 Base = declarative_base()
 
 def get_db():
