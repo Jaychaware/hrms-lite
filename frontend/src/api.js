@@ -1,6 +1,10 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000').toString().trim()
+
+if (!API_BASE_URL || typeof API_BASE_URL !== 'string') {
+  console.warn('API URL not configured, using localhost')
+}
 
 const api = axios.create({
   baseURL: API_BASE_URL,
