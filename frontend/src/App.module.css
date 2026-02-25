@@ -1,0 +1,97 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+}
+
+.header {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  font-size: 16px;
+  font-weight: 300;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.nav {
+  display: flex;
+  gap: 0;
+  padding: 0;
+  background-color: white;
+  border-bottom: 2px solid #ddd;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.navBtn {
+  flex: 1;
+  padding: 16px 24px;
+  border: none;
+  background-color: white;
+  color: #666;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.navBtn:hover {
+  color: #333;
+  background-color: #f9f9f9;
+}
+
+.navBtn.active {
+  color: #4CAF50;
+  border-bottom-color: #4CAF50;
+}
+
+.main {
+  flex: 1;
+  padding: 24px 0;
+}
+
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: auto;
+  font-size: 14px;
+}
+
+.footer p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 24px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .navBtn {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .main {
+    padding: 12px;
+  }
+}
