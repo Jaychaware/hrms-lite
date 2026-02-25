@@ -50,7 +50,7 @@ function App() {
       </main>
 
       <footer className={styles.footer}>
-        <p>&copy; 2024 HRMS Lite</p>
+        <p>&copy; 2026 HRMS Lite</p>
       </footer>
     </div>
   )
