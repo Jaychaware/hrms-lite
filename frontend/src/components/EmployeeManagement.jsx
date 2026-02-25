@@ -22,69 +22,56 @@ export default function EmployeeManagement() {
       const response = await employeeAPI.getAll()
       setEmployees(response.data)
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch employees')
+      setError(err.response?.data?.detail || 'Error loading employees')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleAddEmployee = async (formData) => {
+  const handleAddEmployee = async (data) => {
     try {
-      setError('')
-      await employeeAPI.create(formData)
-      setSuccess('Employee added successfully!')
+      await employeeAPI.create(data)
+      setSuccess('Employee added!')
       setShowForm(false)
       fetchEmployees()
       setTimeout(() => setSuccess(''), 3000)
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to add employee')
+      setError(err.response?.data?.detail || 'Error adding employee')
     }
   }
 
-  const handleDeleteEmployee = async (employeeId) => {
-    if (confirm('Are you sure you want to delete this employee?')) {
-      try {
-        setError('')
-        await employeeAPI.delete(employeeId)
-        setSuccess('Employee deleted successfully!')
-        fetchEmployees()
-        setTimeout(() => setSuccess(''), 3000)
-      } catch (err) {
-        setError(err.response?.data?.message || 'Failed to delete employee')
-      }
+  const handleDelete = async (id) => {
+    if (!confirm('Delete this employee?')) return
+    try {
+      await employeeAPI.delete(id)
+      setSuccess('Employee deleted!')
+      fetchEmployees()
+      setTimeout(() => setSuccess(''), 3000)
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting employee')
     }
   }
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>Employee Management</h2>
-        <button 
-          className={styles.primaryBtn}
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? 'Cancel' : '+ Add Employee'}
+        <h2>Employees</h2>
+        <button className={styles.primaryBtn} onClick={() => setShowForm(!showForm)}>
+          {showForm ? 'Cancel' : '+ Add'}
         </button>
       </div>
 
       {error && <div className={styles.error}>{error}</div>}
       {success && <div className={styles.success}>{success}</div>}
 
-      {showForm && (
-        <EmployeeForm onSubmit={handleAddEmployee} />
-      )}
+      {showForm && <EmployeeForm onSubmit={handleAddEmployee} />}
 
       {loading ? (
-        <div className={styles.loading}>Loading employees...</div>
+        <div className={styles.loading}>Loading...</div>
       ) : employees.length === 0 ? (
-        <div className={styles.empty}>
-          <p>No employees found. Add one to get started!</p>
-        </div>
+        <div className={styles.empty}>No employees found</div>
       ) : (
-        <EmployeeTable 
-          employees={employees} 
-          onDelete={handleDeleteEmployee}
-        />
+        <EmployeeTable employees={employees} onDelete={handleDelete} />
       )}
     </div>
   )

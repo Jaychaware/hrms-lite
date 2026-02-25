@@ -10,76 +10,63 @@ export default function AttendanceManagement() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const [selectedEmployee, setSelectedEmployee] = useState('')
+  const [selected, setSelected] = useState('')
 
   useEffect(() => {
     fetchEmployees()
-    fetchAllRecords()
+    fetchRecords()
   }, [])
 
   const fetchEmployees = async () => {
     try {
-      const response = await employeeAPI.getAll()
-      setEmployees(response.data)
+      const res = await employeeAPI.getAll()
+      setEmployees(res.data)
     } catch (err) {
-      setError('Failed to fetch employees')
+      setError('Error loading employees')
     }
   }
 
-  const fetchAllRecords = async () => {
+  const fetchRecords = async () => {
     setLoading(true)
     try {
-      const response = await attendanceAPI.getAll()
-      setRecords(response.data)
+      const res = await attendanceAPI.getAll()
+      setRecords(res.data)
       setError('')
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch attendance records')
+      setError('Error loading records')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleMarkAttendance = async (formData) => {
+  const handleMark = async (data) => {
     try {
-      setError('')
-      await attendanceAPI.create(formData)
-      setSuccess('Attendance marked successfully!')
-      fetchAllRecords()
+      await attendanceAPI.create(data)
+      setSuccess('Marked!')
+      fetchRecords()
       setTimeout(() => setSuccess(''), 3000)
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to mark attendance')
+      setError(err.response?.data?.detail || 'Error')
     }
   }
 
-  const displayRecords = selectedEmployee
-    ? records.filter(r => r.employee_id === selectedEmployee)
-    : records
+  const display = selected ? records.filter(r => r.employee_id === selected) : records
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>Attendance Management</h2>
+        <h2>Attendance</h2>
       </div>
 
       {error && <div className={styles.error}>{error}</div>}
       {success && <div className={styles.success}>{success}</div>}
 
-      {employees.length > 0 && (
-        <AttendanceForm 
-          employees={employees}
-          onSubmit={handleMarkAttendance}
-        />
-      )}
+      {employees.length > 0 && <AttendanceForm employees={employees} onSubmit={handleMark} />}
 
       <div className={styles.filterSection}>
-        <label htmlFor="employeeFilter">Filter by Employee: </label>
-        <select
-          id="employeeFilter"
-          value={selectedEmployee}
-          onChange={(e) => setSelectedEmployee(e.target.value)}
-          className={styles.select}
-        >
-          <option value="">All Employees</option>
+        <label>Filter: </label>
+        <select value={selected} onChange={(e) => setSelected(e.target.value)} className={styles.select}>
+          <option value="">All</option>
           {employees.map(emp => (
             <option key={emp.id} value={emp.employee_id}>
               {emp.employee_id} - {emp.full_name}
@@ -89,13 +76,11 @@ export default function AttendanceManagement() {
       </div>
 
       {loading ? (
-        <div className={styles.loading}>Loading attendance records...</div>
-      ) : displayRecords.length === 0 ? (
-        <div className={styles.empty}>
-          <p>No attendance records found. Mark attendance to get started!</p>
-        </div>
+        <div className={styles.loading}>Loading...</div>
+      ) : display.length === 0 ? (
+        <div className={styles.empty}>No records found</div>
       ) : (
-        <AttendanceTable records={displayRecords} />
+        <AttendanceTable records={display} />
       )}
     </div>
   )

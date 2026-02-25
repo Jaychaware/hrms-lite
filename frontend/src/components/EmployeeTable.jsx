@@ -6,26 +6,26 @@ export default function EmployeeTable({ employees, onDelete }) {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Employee ID</th>
-            <th>Full Name</th>
+            <th>ID</th>
+            <th>Name</th>
             <th>Email</th>
-            <th>Department</th>
-            <th>Created Date</th>
+            <th>Dept</th>
+            <th>Date</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {employees.map((employee) => (
-            <tr key={employee.id}>
-              <td>{employee.employee_id}</td>
-              <td>{employee.full_name}</td>
-              <td>{employee.email}</td>
-              <td>{employee.department}</td>
-              <td>{new Date(employee.created_at).toLocaleDateString()}</td>
+          {employees.map((emp) => (
+            <tr key={emp.id}>
+              <td>{emp.employee_id}</td>
+              <td>{emp.full_name}</td>
+              <td>{emp.email}</td>
+              <td>{emp.department}</td>
+              <td>{new Date(emp.created_at).toLocaleDateString()}</td>
               <td>
                 <button
                   className={styles.deleteBtn}
-                  onClick={() => onDelete(employee.employee_id)}
+                  onClick={() => onDelete(emp.employee_id)}
                 >
                   Delete
                 </button>

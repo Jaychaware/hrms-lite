@@ -6,23 +6,21 @@ export default function AttendanceTable({ records }) {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Employee ID</th>
+            <th>Employee</th>
             <th>Date</th>
             <th>Status</th>
-            <th>Recorded Date</th>
           </tr>
         </thead>
         <tbody>
-          {records.map((record) => (
-            <tr key={record.id} className={record.status === 'Present' ? styles.present : styles.absent}>
-              <td>{record.employee_id}</td>
-              <td>{new Date(record.date).toLocaleDateString()}</td>
+          {records.map((r) => (
+            <tr key={r.id} className={r.status === 'Present' ? styles.present : styles.absent}>
+              <td>{r.employee_id}</td>
+              <td>{new Date(r.date).toLocaleDateString()}</td>
               <td>
-                <span className={`${styles.status} ${styles[record.status.toLowerCase()]}`}>
-                  {record.status}
+                <span className={`${styles.status} ${styles[r.status.toLowerCase()]}`}>
+                  {r.status}
                 </span>
               </td>
-              <td>{new Date(record.created_at).toLocaleDateString()}</td>
             </tr>
           ))}
         </tbody>

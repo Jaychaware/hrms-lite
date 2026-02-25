@@ -10,7 +10,7 @@ function App() {
     <div className={styles.app}>
       <header className={styles.header}>
         <h1 className={styles.title}>HRMS Lite</h1>
-        <p className={styles.subtitle}>Human Resource Management System</p>
+        <p className={styles.subtitle}>HR Management System</p>
       </header>
 
       <nav className={styles.nav}>
@@ -34,7 +34,7 @@ function App() {
       </main>
 
       <footer className={styles.footer}>
-        <p>&copy; 2024 HRMS Lite. All rights reserved.</p>
+        <p>&copy; 2024 HRMS Lite</p>
       </footer>
     </div>
   )

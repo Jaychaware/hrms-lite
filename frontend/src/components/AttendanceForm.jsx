@@ -2,58 +2,37 @@ import { useState } from 'react'
 import styles from './AttendanceForm.module.css'
 
 export default function AttendanceForm({ employees, onSubmit }) {
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     employee_id: '',
     date: '',
     status: 'Present'
   })
-  const [errors, setErrors] = useState('')
+  const [error, setError] = useState('')
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-    setErrors('')
-  }
-
-  const validateForm = () => {
-    if (!formData.employee_id.trim()) return 'Employee is required'
-    if (!formData.date.trim()) return 'Date is required'
-    if (!formData.status) return 'Status is required'
-    return ''
+    setForm(prev => ({ ...prev, [name]: value }))
+    setError('')
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const error = validateForm()
-    if (error) {
-      setErrors(error)
+    if (!form.employee_id || !form.date) {
+      setError('All fields required')
       return
     }
-    onSubmit(formData)
-    setFormData({
-      employee_id: '',
-      date: '',
-      status: 'Present'
-    })
+    onSubmit(form)
+    setForm({ employee_id: '', date: '', status: 'Present' })
   }
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      {errors && <div className={styles.error}>{errors}</div>}
+      {error && <div className={styles.error}>{error}</div>}
       <div>
         <div className={styles.formGroup}>
-          <label htmlFor="employee_id">Employee *</label>
-          <select
-            id="employee_id"
-            name="employee_id"
-            value={formData.employee_id}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select an employee</option>
+          <label>Employee</label>
+          <select name="employee_id" value={form.employee_id} onChange={handleChange}>
+            <option value="">Select</option>
             {employees.map(emp => (
               <option key={emp.id} value={emp.employee_id}>
                 {emp.employee_id} - {emp.full_name}
@@ -63,34 +42,19 @@ export default function AttendanceForm({ employees, onSubmit }) {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="date">Date *</label>
-          <input
-            id="date"
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            required
-          />
+          <label>Date</label>
+          <input type="date" name="date" value={form.date} onChange={handleChange} />
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="status">Status *</label>
-          <select
-            id="status"
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            required
-          >
+          <label>Status</label>
+          <select name="status" value={form.status} onChange={handleChange}>
             <option value="Present">Present</option>
             <option value="Absent">Absent</option>
           </select>
         </div>
 
-        <button type="submit" className={styles.submitBtn}>
-          Mark Attendance
-        </button>
+        <button type="submit" className={styles.submitBtn}>Mark</button>
       </div>
     </form>
   )
