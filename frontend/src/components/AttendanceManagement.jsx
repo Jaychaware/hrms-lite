@@ -11,6 +11,8 @@ export default function AttendanceManagement() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [selected, setSelected] = useState('')
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo, setDateTo] = useState('')
 
   useEffect(() => {
     fetchEmployees()
@@ -69,7 +71,17 @@ export default function AttendanceManagement() {
     }
   }
 
-  const display = selected ? records.filter(r => r.employee_id === selected) : records
+  const display = records.filter(r => {
+    const matchEmployee = !selected || r.employee_id === selected
+    const recordDate = new Date(r.date)
+    const fromDate = dateFrom ? new Date(dateFrom) : null
+    const toDate = dateTo ? new Date(dateTo) : null
+    
+    const matchDateFrom = !fromDate || recordDate >= fromDate
+    const matchDateTo = !toDate || recordDate <= toDate
+    
+    return matchEmployee && matchDateFrom && matchDateTo
+  })
 
   return (
     <div className={styles.container}>
@@ -83,15 +95,44 @@ export default function AttendanceManagement() {
       {employees.length > 0 && <AttendanceForm employees={employees} onSubmit={handleMark} />}
 
       <div className={styles.filterSection}>
-        <label>Filter: </label>
-        <select value={selected} onChange={(e) => setSelected(e.target.value)} className={styles.select}>
-          <option value="">All</option>
-          {employees.map(emp => (
-            <option key={emp.id} value={emp.employee_id}>
-              {emp.employee_id} - {emp.full_name}
-            </option>
-          ))}
-        </select>
+        <div className={styles.filterGroup}>
+          <label>Employee: </label>
+          <select value={selected} onChange={(e) => setSelected(e.target.value)} className={styles.select}>
+            <option value="">All</option>
+            {employees.map(emp => (
+              <option key={emp.id} value={emp.employee_id}>
+                {emp.employee_id} - {emp.full_name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className={styles.filterGroup}>
+          <label>From Date: </label>
+          <input 
+            type="date" 
+            value={dateFrom} 
+            onChange={(e) => setDateFrom(e.target.value)}
+            className={styles.dateInput}
+          />
+        </div>
+
+        <div className={styles.filterGroup}>
+          <label>To Date: </label>
+          <input 
+            type="date" 
+            value={dateTo} 
+            onChange={(e) => setDateTo(e.target.value)}
+            className={styles.dateInput}
+          />
+        </div>
+
+        <button 
+          onClick={() => { setSelected(''); setDateFrom(''); setDateTo('') }}
+          className={styles.clearBtn}
+        >
+          Clear Filters
+        </button>
       </div>
 
       {loading ? (

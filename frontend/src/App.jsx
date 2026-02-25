@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import Dashboard from './components/Dashboard'
 import EmployeeManagement from './components/EmployeeManagement'
 import AttendanceManagement from './components/AttendanceManagement'
+import EmployeeSummary from './components/EmployeeSummary'
 import styles from './App.module.css'
 
 function App() {
-  const [activeTab, setActiveTab] = useState('employees')
+  const [activeTab, setActiveTab] = useState('dashboard')
 
   return (
     <div className={styles.app}>
@@ -14,6 +16,12 @@ function App() {
       </header>
 
       <nav className={styles.nav}>
+        <button
+          className={`${styles.navBtn} ${activeTab === 'dashboard' ? styles.active : ''}`}
+          onClick={() => setActiveTab('dashboard')}
+        >
+          Dashboard
+        </button>
         <button
           className={`${styles.navBtn} ${activeTab === 'employees' ? styles.active : ''}`}
           onClick={() => setActiveTab('employees')}
@@ -26,11 +34,19 @@ function App() {
         >
           Attendance
         </button>
+        <button
+          className={`${styles.navBtn} ${activeTab === 'summary' ? styles.active : ''}`}
+          onClick={() => setActiveTab('summary')}
+        >
+          Summary
+        </button>
       </nav>
 
       <main className={styles.main}>
+        {activeTab === 'dashboard' && <Dashboard />}
         {activeTab === 'employees' && <EmployeeManagement />}
         {activeTab === 'attendance' && <AttendanceManagement />}
+        {activeTab === 'summary' && <EmployeeSummary />}
       </main>
 
       <footer className={styles.footer}>
